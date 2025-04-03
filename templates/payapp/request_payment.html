@@ -1,0 +1,29 @@
+{% extends 'payapp/payapp_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+	PayApp | Request Payment
+{% endblock %}
+
+{% block page_title %}
+    Request a Payment
+{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-4 ">
+        <div class="rounded shadow-lg p-3 mb-4">
+            <h2 class="mb-2">Account Balance</h2>
+            <p class="pt-0 mb-3">Your available balance is:</p>
+            <p class="display-4 mb-0">{{ balance }}</p>
+        </div>
+        <div class="rounded shadow-lg p-3 mb-4">
+            <form method="POST" class="form-group">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary btn-block mt-2">Send</button>
+            </form>
+        </div>
+
+    </div>
+{% endblock %}

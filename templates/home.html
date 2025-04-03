@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+	PayApp | Home
+{% endblock %}
+
+{% block background-image %}
+    background-image: url("{% static 'payapp/images/payment.jpg' %}");
+{% endblock %}
+
+{% block nav %}
+    <a href="/auth/login" class="nav-link">Login</a>
+    <a href="/auth/register" class="nav-link">Register</a>
+{% endblock %}
+
+{% block page_title %}
+	PayApp
+{% endblock %}
+
+{% block content %}
+    <p class="text-center">Easy and quick payments right at your fingertips.</p>
+
+{% endblock %}

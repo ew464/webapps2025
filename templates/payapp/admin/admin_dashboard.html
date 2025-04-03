@@ -1,0 +1,87 @@
+{% extends 'payapp/payapp_base.html' %}
+
+{% block title %}
+    PayApp | Dashboard
+{% endblock %}
+
+{% block page_title %}
+    Hi, {{ first_name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4 ">
+
+        <div class="rounded shadow-lg p-3 mb-4">
+            <h2 class="mb-2">All Transactions</h2>
+            <p>A list of all transactions on the app</p>
+            {% if not transaction_history %}
+                <p class="text-center">No transactions yet</p>
+            {% endif %}
+            <div class="scroll-box" style="max-height: 400px; overflow-y: auto;">
+                {% for txn in transaction_history %}
+                    <div class="rounded shadow-lg p-3 mb-2 bg-dark text-white">
+                        <div class="row w-full container-fluid justify-content-between">
+                            <div class="col-xs-6">
+                                <p class="text-lg font-semibold m-0">Amount: <span class="font-normal">{{ txn.amount_received|default:txn.amount_paid }} {{ txn.amount_received_currency|default:txn.amount_paid_currency }}</span></p>
+                                <p class="text-lg font-semibold m-0">Date: <span class="font-normal">{{ txn.datetime|date:"d/m/Y H:i:s" }}</span></p>
+
+
+                                <p class="text-lg font-semibold m-0">To: <span class="font-normal">{{ txn.to_user.username }}</span></p>
+
+
+                                <p class="text-lg font-semibold m-0">From: <span class="font-normal">{{ txn.from_user.username }}</span></p>
+
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="rounded shadow-lg p-3 mb-4">
+            <h2 class="mb-2">Assign Staff</h2>
+            <p>Assign staff status to users</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="scroll-box" style="max-height: 400px; overflow-y: auto;">
+                    {% for user in users %}
+                        <div class="rounded shadow-lg p-3 mb-2 bg-dark text-white">
+                            <div class="row w-full container-fluid justify-content-between">
+                                <div class="col-xs-6">
+                                    <p class="text-lg font-semibold m-0">Username: <span class="font-normal">{{ user.username }}</span></p>
+                                    <p class="text-lg font-semibold m-0">Email: <span class="font-normal">{{ user.email }}</span></p>
+                                    <p class="text-lg font-semibold m-0">First Name: <span class="font-normal">{{ user.first_name }}</span></p>
+                                    <p class="text-lg font-semibold m-0">Last Name: <span class="font-normal">{{ user.last_name }}</span></p>
+                                </div>
+                                <div class="col-xs-6 text-right">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="is_staff_{{ user.id }}" id="is_staff_{{ user.id }}" class="form-check-input" {% if user.is_staff %}checked{% endif %}>
+                                        <label for="is_staff_{{ user.id }}" class="form-check-label ms-2">Assign Staff</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if errors %}
+                    <div class="alert alert-danger mt-3">
+                        <ul>
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary mt-1 w-100">Save Changes</button>
+            </form>
+
+        </div>
+
+
+
+
+
+
+
+    </div>
+{% endblock %}

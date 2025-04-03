@@ -1,0 +1,18 @@
+{% extends 'register/register_base.html' %}
+
+{% block title %}
+	PayApp | Logged Out
+{% endblock %}
+
+{% block page_title %}
+    Logged Out
+{% endblock %}
+
+{% block content %}
+    <div class="text-center mt-4">
+        <p>
+            You have been logged out.
+            <a href="/auth/login" class="text-primary font-weight-bold">Login</a> to access your account.
+        </p>
+    </div>
+{% endblock %}

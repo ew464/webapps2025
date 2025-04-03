@@ -1,0 +1,150 @@
+{% extends 'payapp/payapp_base.html' %}
+
+{% block title %}
+    PayApp | Dashboard
+{% endblock %}
+
+{% block page_title %}
+    Hi, {{ first_name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4 ">
+        <div class="rounded shadow-lg p-3 mb-4">
+            <h2 class="mb-2">Account Balance</h2>
+            <p class="pt-0 mb-3">Your account balance is in {{ currency }}</p>
+            <p class="display-4 mb-0">{{ balance }}</p>
+        </div>
+
+        <div class="rounded shadow-lg p-3 mb-4">
+            <h2 class="mb-2">Outstanding Payments</h2>
+            {% if not payment_requests_to_user %}
+                <p class="text-center">No outstanding payments.</p>
+            {% endif %}
+            <div class="scroll-box" style="max-height: 400px; overflow-y: auto;">
+                {% for request in payment_requests_to_user %}
+                    <div class="rounded shadow-lg p-4 mb-4 bg-danger text-white">
+                        <div class="row w-full container-fluid justify-content-between">
+                            <div class="col-xs-6">
+                                <p class="text-lg font-semibold mb-1">Request ID: <span
+                                        class="font-normal">{{ request.id }}</span></p>
+                                <p class="text-lg font-semibold mb-1">Requested by: <span
+                                        class="font-normal">{{ request.request_from }}</span></p>
+                                <p class="text-lg font-semibold mb-1">Amount: <span
+                                        class="font-normal">{{ request.amount_requested }} {{ request.amount_requested_currency }}</span>
+                                </p>
+                                <p class="text-lg font-semibold mb-1">Status: <span
+                                        class="font-normal">{{ request.get_status_display }}</span></p>
+                            </div>
+
+
+                            <div class="col-xs-6 align-items-center d-flex">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="request_id" value="{{ request.id }}">
+                                    <button type="submit" name="status_{{ request.id }}" value="accept"
+                                            class="btn btn-success align-right m-2">Accept
+                                    </button>
+                                    <button type="submit" name="status_{{ request.id }}" value="reject"
+                                            class="btn btn-dark align-right m-2">Reject
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="rounded shadow-lg p-3 mb-4">
+            <h2 class="mb-2">Requests Made</h2>
+            {% if not payment_requests_from_user_unpaid %}
+                <p class="text-center">You currently don't have any payment requests. <a href="/request_payment/">Make a payment request</a> now.</p>
+            {% endif %}
+            <div class="scroll-box" style="max-height: 300px; overflow-y: auto;">
+                {% for request in payment_requests_from_user_unpaid %}
+                    <div class="rounded shadow-lg p-3 mb-2 bg-dark text-white">
+                        <div class="row w-full container-fluid justify-content-between">
+                            <div class="col-xs-6">
+                                <p class="text-lg font-semibold m-0">Request ID: <span
+                                        class="font-normal">{{ request.id }}</span></p>
+                                <p class="text-lg font-semibold m-0">Requested by: <span
+                                        class="font-normal">{{ request.request_from }}</span></p>
+                                <p class="text-lg font-semibold m-0">Amount: <span
+                                        class="font-normal">{{ request.amount_requested }} {{ request.amount_requested_currency }}</span>
+                                </p>
+                                <p class="text-lg font-semibold m-0">Status: <span
+                                        class="font-normal">{{ request.get_status_display }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <div class="rounded shadow-lg p-3 mb-4">
+            <h2 class="mb-2">Closed Requests</h2>
+            {% if not payment_requests_to_user %}
+                <p class="text-center">You currently don't have any closed payment requests.</p>
+            {% endif %}
+            <div class="scroll-box" style="max-height: 400px; overflow-y: auto;">
+                {% for request in payment_requests_from_user %}
+                    <div class="rounded shadow-lg p-3 mb-2 bg-primary text-white">
+                        <div class="row w-full container-fluid justify-content-between">
+                            <div class="col-xs-6">
+                                <p class="text-lg font-semibold m-0">Request ID: <span
+                                        class="font-normal">{{ request.id }}</span></p>
+                                <p class="text-lg font-semibold m-0">Requested by: <span
+                                        class="font-normal">{{ request.request_from }}</span></p>
+                                <p class="text-lg font-semibold m-0">To: <span
+                                        class="font-normal">{{ request.payee }}</span></p>
+                                <p class="text-lg font-semibold m-0">Amount: <span
+                                        class="font-normal">{{ request.amount_requested }} {{ request.amount_requested_currency }}</span>
+                                </p>
+                                <p class="text-lg font-semibold m-0">Status: <span
+                                        class="font-normal">{{ request.get_status_display }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="rounded shadow-lg p-3 mb-4">
+            <h2 class="mb-2">Transaction History</h2>
+            {% if not transaction_history %}
+                <p class="text-center">No transactions yet.</p>
+            {% endif %}
+            <div class="scroll-box" style="max-height: 400px; overflow-y: auto;">
+                {% for txn in transaction_history %}
+                    <div class="rounded shadow-lg p-3 mb-2 {% if txn.4 %}bg-success{% else %}bg-dark{% endif %} text-white">
+                        <div class="row w-full container-fluid justify-content-between">
+                            <div class="col-xs-6">
+                                <p class="text-lg font-semibold m-0">Amount: <span
+                                        class="font-normal">{{ txn.0 }} {{ txn.1 }}</span></p>
+                                <p class="text-lg font-semibold m-0">Date: <span
+                                        class="font-normal">{{ txn.2 }}</span></p>
+
+                                {% if txn.3 %}
+                                    <p class="text-lg font-semibold m-0">To: <span
+                                            class="font-normal">{{ txn.3 }}</span></p>
+                                {% endif %}
+                                {% if txn.4 %}
+                                    <p class="text-lg font-semibold m-0">From: <span
+                                            class="font-normal">{{ txn.4 }}</span></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+
+
+
+    </div>
+{% endblock %}

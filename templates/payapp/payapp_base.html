@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% endblock %}
+
+{% block nav %}
+    {% if user.is_staff %}
+    <a href="/admin_dashboard" class="nav-link">Admin Dashboard</a>
+    {% endif %}
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <a href="/pay" class="nav-link">Pay</a>
+    <a href="/request_payment" class="nav-link">Request Payment</a>
+    <a href="/auth/logout" class="nav-link btn-danger">Logout</a>
+{% endblock %}
+
+{% block page_title %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
